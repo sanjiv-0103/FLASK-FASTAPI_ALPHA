@@ -1,0 +1,76 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+Market Page
+{% endblock %}
+
+{% block content %}
+<div class="row" style="margin-top:20px; margin-left:20px;">
+    <div class="col-8">
+        <h2>Available items on the Market</h2>
+        <p>Click on one of the items to start buying</p>
+        <br>
+        <table class="table table-hover table-dark">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Barcode</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                {% if item.owner is none %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.barcode }}</td>
+                    <td>{{ item.price }}$</td>
+                    <td>
+                        <button class="btn btn-outline btn-info"
+                                data-toggle="modal"
+                                data-target="#Modal-MoreInfo-{{ item.id }}">
+                            More Info
+                        </button>
+                        <button class="btn btn-outline btn-success"
+                                data-toggle="modal"
+                                data-target="#Modal-PurchaseConfirm-{{ item.id }}">
+                            Purchase this Item
+                        </button>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% for item in items %}
+            {% if item.owner is none %}
+                {% include 'includes/items_modals.html' %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="col-4">
+        <h2>Owned Items</h2>
+        <p>Click on sell item to put an item back on the Market</p>
+        <br>
+        {% for item in current_user.items %}
+        <div class="card bg-dark mb-3">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.name }}</h5>
+                <p class="card-text">
+                    This item costs {{ item.price }}$
+                </p>
+                <button class="btn btn-outline-danger" disabled>
+                    Sell this Item
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
